@@ -4,16 +4,19 @@ document.getElementById("calculateBtn").addEventListener("click", () => {
     let years = parseInt(document.getElementById("years").value);
 
     // Validation
-    if(principal < 2000 || principal > 1000000 || isNaN(principal)) {
-        alert("Enter a valid principal (2000 - 1000000)");
-        return;
+    let errors=[];
+    if(principal < 2000 || principal > 100000000 || isNaN(principal)) {
+        errors.push("Enter a valid principal (2000 - 1000000)");
     }
     if(annualRate < 1 || annualRate > 30 || isNaN(annualRate)) {
-        alert("Enter a valid annual rate (1 - 30)");
-        return;
+        errors.push("Enter a valid annual rate (1 - 30)");
     }
     if(years < 1 || years > 30 || isNaN(years)) {
-        alert("Enter a valid term (1 - 30 years)");
+        errors.push("Enter a valid term (1 - 30 years)");
+    }
+
+    if(errors.length>0){
+        alert(errors.join("\n"));
         return;
     }
 
@@ -23,11 +26,16 @@ document.getElementById("calculateBtn").addEventListener("click", () => {
     let M = principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
 
     // Format currency
-    let usd = M.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    let inr = M.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+    const INR_to_USD=90;
+    let inrAmount=M;
+    let usdAmount=inrAmount/INR_to_USD;
+
+    let currencyINR = inrAmount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' });
+    let currencyUSD = usdAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
     // Display results
-    document.getElementById("monthlyPayment").innerText = `Monthly Payment: ${M.toFixed(2)}`;
-    document.getElementById("currencyUSD").innerText = `In Dollars: ${usd}`;
-    document.getElementById("currencyINR").innerText = `In Rupees: ${inr}`;
+    document.getElementById("months").innerText=`Loan duration: ${n} months`;
+    document.getElementById("monthlyPayment").innerText = `Monthly Payment: ${currencyINR}`;
+    document.getElementById("currencyINR").innerText = `In Rupees: ${currencyINR}`;
+    document.getElementById("currencyUSD").innerText = `In Dollars: ${currencyUSD}`;
 });
